@@ -1,0 +1,35 @@
+
+
+*{
+    box-sizing: border-box;
+}
+
+.game {
+    margin: 20px;
+}
+
+.character{
+    float: left;
+    text-align: center;    
+    height: 100px;
+    width: 100px;
+    border: 2px solid green;
+    margin-right: 5px;
+}
+
+.character-name {
+    clear: both;
+}
+
+.your-character {
+    float: left;
+    clear: both;
+}
+
+.enemy-select {
+    clear: both;
+}
+
+.fight-section { 
+    clear: both;
+}
