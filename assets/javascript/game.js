@@ -31,25 +31,18 @@ function starWars() {
             }
         }
 
-
         //initialize each character here
         var luke = new character("Luke Skywalker", 100, 10, 10, "luke");
         var jarJar = new character("Jar Jar Binks", 75, 25, 1, "jar-jar");
         var hanSolo = new character("Han Solo", 150, 15, 3, "han-solo");
         var yoda = new character("Yoda", 50, 50, 25, "yoda");
 
-
-
-
         //variables for character selection
         var yourCharPicked = false;
-        var enemyCharPicked = false;
         var enemyCharAlive = false;
 
-        //variables used for attack phase
-        //values are updated when new character is selected
-        var playerAttack = $("#active-character").attr("attackPower");
-        var enemyCounter = $("#active-enemy").attr("counterAttack");
+        //used to scale attack power, +1 every attack in attack button function
+        var totalAttacks = 0;
 
 
         //first click selects character, second selects enemy
@@ -61,7 +54,6 @@ function starWars() {
             playerAttack = $("#active-character").attr("attackPower");
 
             $(".character-select").children().each(function (node) {
-                $(this).attr("id", "active-enemy");
                 $(this).appendTo(".enemy-select");
             });
         });
@@ -69,16 +61,30 @@ function starWars() {
         //next click chooses enemy and moves them to defender area
         //hide remaining characters until fight is over
         $(".enemy-select").on("click", ".character", function () {
-            $(this).appendTo(".defending-character");
-            enemyCharPicked = true;
-            enemyCharAlive = true;
+            if (!enemyCharAlive) {
+                $(this).appendTo(".defending-character");
+                $(this).attr("id", "active-enemy");
+                enemyCharAlive = true;
+            }
         });
 
         $("#attack-button").on("click", function () {
-            enemyCounter = $("#active-enemy").attr("counterAttack");    
-            console.log(playerAttack);
-            console.log($("#active-character").attr("attackPower"));
-            console.log(enemyCounter);
+            //variables used for attack phase
+            //values are updated when new character is selected
+            console.log(totalAttacks);
+            var playerAttack = parseInt($("#active-character").attr("attackPower"));
+            var enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
+            var playerHealth = parseInt($("#active-character .health-points").text());
+            var enemyHealth = parseInt($("#active-enemy .health-points").text());
+
+            $("#active-enemy .health-points").text((enemyHealth - (playerAttack + (playerAttack * totalAttacks))));
+            totalAttacks++;
+            console.log(totalAttacks);
+
+
+
+
+
 
         });
 
