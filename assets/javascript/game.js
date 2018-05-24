@@ -38,12 +38,12 @@ function starWars() {
 
         //initialize each character here
         var luke = new character("Luke Skywalker", 100, 10, 10, "luke");
-        var jarJar = new character("Jar Jar Binks", 75, 25, 1, "jar-jar");
-        var hanSolo = new character("Han Solo", 150, 15, 3, "han-solo");
-        var yoda = new character("Yoda", 50, 50, 25, "yoda");
+        var jarJar = new character("Jar Jar Binks", 75, 15, 2, "jar-jar");
+        var hanSolo = new character("Han Solo", 150, 8, 5, "han-solo");
+        var yoda = new character("Yoda", 50, 25, 25, "yoda");
 
-        //variables for character selection
-        var yourCharPicked = false;
+        //variables for character selection to regulate selection clicks
+        var yourCharAlive = false;
         var enemyCharAlive = false;
 
         //used to scale attack power, +1 every attack in attack button function
@@ -53,6 +53,26 @@ function starWars() {
         var attackMessage = $("#attack-message");
         var counterMessage = $("#counter-message");
         var combatMessage = $("#combat-message");
+        var newGameButton = $("#newgame-button");
+
+        //grab variables from player and enemy divs
+        //values are updated within attack method to update when new enemy is selected
+        var playerAttack;
+        var enemyCounter;
+        var playerHealth;
+        var enemyHealth;
+        var enemyName;
+
+        function updateAttackInfo() {
+            playerAttack = parseInt($("#active-character").attr("attackPower"));
+            enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
+            playerHealth = $("#active-character .health-points");
+            enemyHealth = $("#active-enemy .health-points");
+            enemyName = $("#active-enemy .character-name").text();
+        }
+
+        $("#active-character").remove();
+        newGameButton.hide();
 
         //erase all prior combat text
         //called once on game start and after every enemy selection
@@ -61,14 +81,14 @@ function starWars() {
             counterMessage.empty();
             combatMessage.empty();
         }
-
+        clearCombatText();
 
         //first click selects character, second selects enemy
         //sets IDs to active character / active enemy
         $(".character-select").on("click", ".character", function () {
             $(this).attr("id", "active-character");
             $(this).appendTo(".your-character");
-            yourCharPicked = true;
+            yourCharAlive = true;
             playerAttack = $("#active-character").attr("attackPower");
 
             $(".character-select").children().each(function (node) {
@@ -79,8 +99,8 @@ function starWars() {
         //next click chooses enemy and moves them to defender area
         //hide remaining characters until fight is over
         $(".enemy-select").on("click", ".character", function () {
-            if (!enemyCharAlive) {
-                $(this).appendTo(".defending-character");
+            if (!enemyCharAlive && yourCharAlive) {
+                $(this).appendTo(".defender");
                 $(this).attr("id", "active-enemy");
                 enemyCharAlive = true;
                 clearCombatText();
@@ -89,14 +109,16 @@ function starWars() {
 
         $("#attack-button").on("click", function () {
             //check for active enemy before attempting any attack calculations
-            if (enemyCharAlive) {
-                //grab variables from player and enemy divs
-                //values are updated within attack method to update when new enemy is selected
-                var playerAttack = parseInt($("#active-character").attr("attackPower"));
-                var enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
-                var playerHealth = $("#active-character .health-points");
-                var enemyHealth = $("#active-enemy .health-points");
-                var enemyName = $("#active-enemy .character-name").text();
+            if (enemyCharAlive && yourCharAlive) {
+
+                updateAttackInfo();
+                // //grab variables from player and enemy divs
+                // //values are updated within attack method to update when new enemy is selected
+                // var playerAttack = parseInt($("#active-character").attr("attackPower"));
+                // var enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
+                // var playerHealth = $("#active-character .health-points");
+                // var enemyHealth = $("#active-enemy .health-points");
+                // var enemyName = $("#active-enemy .character-name").text();
 
                 //calculate scaling attack for dmg increase
                 var scalingAttack = playerAttack + (playerAttack * totalAttacks);
@@ -117,7 +139,7 @@ function starWars() {
                 counterMessage.text(enemyName + " counter attacked you for " + enemyCounter + " damage!");
 
                 if (enemyHealth.text() <= 0) {
-                    $("#active-enemy").hide();
+                    $("#active-enemy").remove();
                     $("#active-enemy").removeAttr("id");
                     enemyCharAlive = false;
                     totalCharacters--;
@@ -125,19 +147,26 @@ function starWars() {
                     //add text to combat-message div for character defeat & choose new enemy
                     combatMessage.text("You defeated " + enemyName + "! Select a new character to battle!");
 
-                    if (totalCharacters = 1) {
-                        //win condition, last remaining character is the player
-                        //display victory message and ask to play again
-                        //start over = make button for starWars(); function call?
-
+                    if (totalCharacters === 1) {
+                        combatMessage.text("Congratulations, you have defeated all your foes! Would you like to play again?");
+                        newGameButton.show();
+                        newGameButton.on("click", function () {
+                            location.reload();                            
+                        });
                     }
                 }
 
                 if (playerHealth.text() <= 0) {
-                    //game over, add failure message to combat-message and ask to start over
-                    //start over = make button for starWars(); function call?
+                    yourCharAlive = false;
+                    combatMessage.text("You have been defeated by " + enemyName + "!  Would you like to play again?");
+                    //add new game button below
+                    newGameButton.show();
+                    newGameButton.on("click", function () {
+                        location.reload();                    
+                    });
                 }
             }
+
         });
     });
 }
