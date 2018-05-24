@@ -28,8 +28,13 @@ function starWars() {
                 characterSpan.attr("id", this.identifier);
                 characterSpan.attr("attackPower", this.attackPower);
                 characterSpan.attr("counterAttack", this.counterAttack);
+                totalCharacters++;
             }
         }
+
+        //used to track enemies defeated to monitor win condition
+        // +1 every createCharacter() call
+        var totalCharacters = 0;
 
         //initialize each character here
         var luke = new character("Luke Skywalker", 100, 10, 10, "luke");
@@ -43,6 +48,19 @@ function starWars() {
 
         //used to scale attack power, +1 every attack in attack button function
         var totalAttacks = 0;
+
+        //grab divs to display text during combat
+        var attackMessage = $("#attack-message");
+        var counterMessage = $("#counter-message");
+        var combatMessage = $("#combat-message");
+
+        //erase all prior combat text
+        //called once on game start and after every enemy selection
+        function clearCombatText() {
+            attackMessage.empty();
+            counterMessage.empty();
+            combatMessage.empty();
+        }
 
 
         //first click selects character, second selects enemy
@@ -65,38 +83,61 @@ function starWars() {
                 $(this).appendTo(".defending-character");
                 $(this).attr("id", "active-enemy");
                 enemyCharAlive = true;
+                clearCombatText();
             }
         });
 
         $("#attack-button").on("click", function () {
-            //variables used for attack phase
-            //values are updated within attack method to update when new enemy is selected
-            var playerAttack = parseInt($("#active-character").attr("attackPower"));
-            var enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
-            var playerHealth = $("#active-character .health-points");
-            var enemyHealth = $("#active-enemy .health-points");
+            //check for active enemy before attempting any attack calculations
+            if (enemyCharAlive) {
+                //grab variables from player and enemy divs
+                //values are updated within attack method to update when new enemy is selected
+                var playerAttack = parseInt($("#active-character").attr("attackPower"));
+                var enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
+                var playerHealth = $("#active-character .health-points");
+                var enemyHealth = $("#active-enemy .health-points");
+                var enemyName = $("#active-enemy .character-name").text();
 
-            //player hp = hp minus counter attack
-            playerHealth.text((parseInt(playerHealth.text() - enemyCounter)));
+                //calculate scaling attack for dmg increase
+                var scalingAttack = playerAttack + (playerAttack * totalAttacks);
 
-            //enemy hp = hp minus (attack + attack*counter [for scaling])
-            enemyHealth.text((parseInt(enemyHealth.text()) - (playerAttack + (playerAttack * totalAttacks))));
+                //player hp = hp minus counter attack
+                playerHealth.text((parseInt(playerHealth.text() - enemyCounter)));
 
-            //attack counter +1 to scale up damage
-            totalAttacks++;
+                //enemy hp = hp minus (attack + attack*counter [for scaling])
+                enemyHealth.text((parseInt(enemyHealth.text()) - scalingAttack));
 
-            //add method here to catch enemy hp > 0
-            //hide enemy element, set enemyCharAlive = false
-            //remove active-enemy attribute on defeat
+                //attack counter +1 to scale up damage
+                totalAttacks++;
 
-            //allow for selection of new enemy to resume combat
+                //add text for player damaged enemy for X, player-attacks div
+                attackMessage.text("You attacked " + enemyName + " for " + scalingAttack + " damage!");
 
-            //victory condition - check for all enemies defeated after enemy death
+                //add text for enemy countered player for X, enemy-attacks div
+                counterMessage.text(enemyName + " counter attacked you for " + enemyCounter + " damage!");
+
+                if (enemyHealth.text() <= 0) {
+                    $("#active-enemy").hide();
+                    $("#active-enemy").removeAttr("id");
+                    enemyCharAlive = false;
+                    totalCharacters--;
+
+                    //add text to combat-message div for character defeat & choose new enemy
+                    combatMessage.text("You defeated " + enemyName + "! Select a new character to battle!");
+
+                    if (totalCharacters = 1) {
+                        //win condition, last remaining character is the player
+                        //display victory message and ask to play again
+                        //start over = make button for starWars(); function call?
+
+                    }
+                }
+
+                if (playerHealth.text() <= 0) {
+                    //game over, add failure message to combat-message and ask to start over
+                    //start over = make button for starWars(); function call?
+                }
+            }
         });
-
-
-
-
     });
-
 }
