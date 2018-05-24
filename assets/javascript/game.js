@@ -70,22 +70,28 @@ function starWars() {
 
         $("#attack-button").on("click", function () {
             //variables used for attack phase
-            //values are updated when new character is selected
-            console.log(totalAttacks);
+            //values are updated within attack method to update when new enemy is selected
             var playerAttack = parseInt($("#active-character").attr("attackPower"));
             var enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
-            var playerHealth = parseInt($("#active-character .health-points").text());
-            var enemyHealth = parseInt($("#active-enemy .health-points").text());
+            var playerHealth = $("#active-character .health-points");
+            var enemyHealth = $("#active-enemy .health-points");
 
-            $("#active-enemy .health-points").text((enemyHealth - (playerAttack + (playerAttack * totalAttacks))));
+            //player hp = hp minus counter attack
+            playerHealth.text((parseInt(playerHealth.text() - enemyCounter)));
+
+            //enemy hp = hp minus (attack + attack*counter [for scaling])
+            enemyHealth.text((parseInt(enemyHealth.text()) - (playerAttack + (playerAttack * totalAttacks))));
+
+            //attack counter +1 to scale up damage
             totalAttacks++;
-            console.log(totalAttacks);
 
+            //add method here to catch enemy hp > 0
+            //hide enemy element, set enemyCharAlive = false
+            //remove active-enemy attribute on defeat
 
+            //allow for selection of new enemy to resume combat
 
-
-
-
+            //victory condition - check for all enemies defeated after enemy death
         });
 
 
