@@ -1,6 +1,7 @@
 function starWars() {
 
     $(document).ready(function () {
+
         class character {
             //Constructor method to create each character
             constructor(name, healthPoints, attackPower, counterAttack, identifier) {
@@ -71,8 +72,10 @@ function starWars() {
             enemyName = $("#active-enemy .character-name").text();
         }
 
+        $("#active-character").hide();
         $("#active-character").remove();
         newGameButton.hide();
+
 
         //erase all prior combat text
         //called once on game start and after every enemy selection
@@ -104,21 +107,14 @@ function starWars() {
                 $(this).attr("id", "active-enemy");
                 enemyCharAlive = true;
                 clearCombatText();
+                updateAttackInfo();
             }
         });
 
         $("#attack-button").on("click", function () {
             //check for active enemy before attempting any attack calculations
             if (enemyCharAlive && yourCharAlive) {
-
                 updateAttackInfo();
-                // //grab variables from player and enemy divs
-                // //values are updated within attack method to update when new enemy is selected
-                // var playerAttack = parseInt($("#active-character").attr("attackPower"));
-                // var enemyCounter = parseInt($("#active-enemy").attr("counterAttack"));
-                // var playerHealth = $("#active-character .health-points");
-                // var enemyHealth = $("#active-enemy .health-points");
-                // var enemyName = $("#active-enemy .character-name").text();
 
                 //calculate scaling attack for dmg increase
                 var scalingAttack = playerAttack + (playerAttack * totalAttacks);
@@ -140,7 +136,6 @@ function starWars() {
 
                 if (enemyHealth.text() <= 0) {
                     $("#active-enemy").remove();
-                    $("#active-enemy").removeAttr("id");
                     enemyCharAlive = false;
                     totalCharacters--;
 
@@ -151,7 +146,7 @@ function starWars() {
                         combatMessage.text("Congratulations, you have defeated all your foes! Would you like to play again?");
                         newGameButton.show();
                         newGameButton.on("click", function () {
-                            location.reload();                            
+                            location.reload();
                         });
                     }
                 }
@@ -162,7 +157,7 @@ function starWars() {
                     //add new game button below
                     newGameButton.show();
                     newGameButton.on("click", function () {
-                        location.reload();                    
+                        location.reload();
                     });
                 }
             }
