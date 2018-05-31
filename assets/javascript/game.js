@@ -19,11 +19,8 @@ function starWars() {
             createCharacter() {
                 var characterSpan = $("<span>");
                 var nameSpan = $("<div>");
-                // var characterImg = $("<img>");
-                var characterImg = $('<img />', {                    
-                     width: 70});
+                var characterImg = $("<img>");             
                 var healthSpan = $("<div>");
-
                 nameSpan.addClass("character-name").append(this.name).appendTo(characterSpan);
                 characterImg.addClass("character-pic").attr("src", ("assets/images/"+this.identifier+".png")).appendTo(characterSpan);
                 healthSpan.addClass("health-points").append(this.healthPoints).appendTo(characterSpan);
