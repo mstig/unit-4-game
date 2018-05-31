@@ -11,7 +11,7 @@ function starWars() {
                 this.attackIncrease = attackPower;
                 this.counterAttack = counterAttack;
                 this.identifier = identifier;
-                this.createCharacter();
+                this.createCharacter();      
             }
 
             //create html elements for characters
@@ -19,11 +19,13 @@ function starWars() {
             createCharacter() {
                 var characterSpan = $("<span>");
                 var nameSpan = $("<div>");
-                var characterImg = $("<img>");
+                // var characterImg = $("<img>");
+                var characterImg = $('<img />', {                    
+                     width: 70});
                 var healthSpan = $("<div>");
 
                 nameSpan.addClass("character-name").append(this.name).appendTo(characterSpan);
-                characterImg.addClass("character-pic").attr("src", this.identifier).appendTo(characterSpan);
+                characterImg.addClass("character-pic").attr("src", ("assets/images/"+this.identifier+".png")).appendTo(characterSpan);
                 healthSpan.addClass("health-points").append(this.healthPoints).appendTo(characterSpan);
                 characterSpan.addClass("character").appendTo(".character-select");
                 characterSpan.attr("id", this.identifier);
@@ -38,10 +40,10 @@ function starWars() {
         var totalCharacters = 0;
 
         //initialize each character here
-        var luke = new character("Luke Skywalker", 100, 10, 10, "luke");
-        var jarJar = new character("Jar Jar Binks", 75, 15, 2, "jar-jar");
-        var hanSolo = new character("Han Solo", 150, 8, 5, "han-solo");
-        var yoda = new character("Yoda", 50, 25, 25, "yoda");
+        var luke = new character("Luke Skywalker", 100, 8, 10, "luke");
+        var jarJar = new character("Jar Jar Binks", 75, 12, 2, "jar-jar");
+        var hanSolo = new character("Han Solo", 150, 7, 5, "han-solo");
+        var yoda = new character("Yoda", 50, 20, 25, "yoda");
 
         //variables for character selection to regulate selection clicks
         var yourCharAlive = false;
@@ -72,6 +74,7 @@ function starWars() {
             enemyName = $("#active-enemy .character-name").text();
         }
 
+        //hides any lingering elements at start of game
         $("#active-character").hide();
         $("#active-character").remove();
         newGameButton.hide();

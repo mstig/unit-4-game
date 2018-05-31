@@ -5,7 +5,7 @@
 
 }
 body {
-    background-image: url("../bgphoto.jpeg");
+    background-image: url("../images/bgphoto.jpeg");
     background-repeat: no-repeat;
 }
 
@@ -16,9 +16,9 @@ body {
     width: 60%;
     padding: 10px;
     font-family: 'Slabo 27px', serif;
-    background-image: url("../starwars.jpg");
+    background-image: url("../images/starwars.jpg");
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: auto 785px;
 }
 
 .title {
